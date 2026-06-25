@@ -1,7 +1,6 @@
 # Minutes → Action — AI Meeting-to-Action Board
 
-Turn meeting notes and transcripts into an executive summary, key
-decisions, and a draggable Kanban board of action items
+An AI-powered meeting intelligence platform that transforms unstructured meeting notes and transcripts into actionable tasks, executive summaries, and interactive Kanban workflows. Built using Gemini, FastAPI, Next.js, and TypeScript to streamline meeting follow-ups and improve team accountability.
 
 ## Preview 
 
