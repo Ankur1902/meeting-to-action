@@ -5,7 +5,7 @@ decisions, and a draggable Kanban board of action items
 
 ## Preview 
 
-![AI Meeting-to-Action Board](assets/meeting-to-action.png)
+![AI Meeting-to-Action Board](asset/meeting-to-action.png)
 
 ## Features
 
