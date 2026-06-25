@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design system: "Minutes → Action"
+
+  The product turns spoken meetings into written commitments, so the
+  palette borrows from paper and ink rather than the generic dark-SaaS
+  purple gradient. Light mode reads like a printed agenda; dark mode
+  reads like a notebook at night, not a black void.
+
+  Priority colors double as the signature device: every task card carries
+  a thin colored tab (rendered in the task-card component) using these
+  three values, so priority is always legible by edge color alone.
+*/
+
+@layer base {
+  :root {
+    --background: 42 33% 97%;          /* warm paper */
+    --foreground: 222 28% 14%;         /* ink */
+    --card: 0 0% 100%;
+    --card-foreground: 222 28% 14%;
+    --border: 38 22% 87%;
+    --muted: 40 30% 94%;
+    --muted-foreground: 220 10% 42%;
+    --accent: 38 58% 52%;              /* amber — primary actions, High priority */
+    --accent-foreground: 0 0% 100%;
+    --secondary: 172 27% 35%;          /* teal — secondary actions, In Progress */
+    --secondary-foreground: 0 0% 100%;
+    --destructive: 9 55% 48%;
+    --ring: 38 58% 52%;
+
+    --priority-high: 16 62% 48%;       /* terracotta */
+    --priority-medium: 172 27% 35%;    /* teal */
+    --priority-low: 220 9% 55%;        /* slate */
+
+    --font-display: "Fraunces", Georgia, serif;
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  .dark {
+    --background: 222 30% 9%;          /* deep ink navy, not pure black */
+    --foreground: 42 24% 92%;          /* warm off-white */
+    --card: 222 26% 13%;
+    --card-foreground: 42 24% 92%;
+    --border: 222 18% 22%;
+    --muted: 222 22% 15%;
+    --muted-foreground: 220 12% 65%;
+    --accent: 38 65% 58%;
+    --accent-foreground: 222 30% 9%;
+    --secondary: 172 30% 45%;
+    --secondary-foreground: 222 30% 9%;
+    --destructive: 9 60% 58%;
+    --ring: 38 65% 58%;
+
+    --priority-high: 16 70% 58%;
+    --priority-medium: 172 35% 50%;
+    --priority-low: 220 10% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+}
+
+/* Thin scrollbar for kanban columns — kept quiet, not decorative */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+}
