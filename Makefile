@@ -1,4 +1,4 @@
-.PHONY: test eval eval-gemini dev-backend dev-frontend
+.PHONY: test eval eval-gemini dev-backend dev-frontend demo
 
 test:
 	cd backend && pytest -q
@@ -14,3 +14,6 @@ dev-backend:
 
 dev-frontend:
 	cd frontend && npm run dev
+
+demo:  ## offline demo API (no API key) on :8000 — pair with `make dev-frontend`
+	cd backend && uvicorn demo_server:app --port 8000

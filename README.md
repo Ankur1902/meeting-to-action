@@ -4,6 +4,8 @@ Turns meeting transcripts into **evidence-backed** summaries and tasks, remember
 
 ![AI Meeting-to-Action Board](asset/meeting-to-action.png)
 
+▶ **[40-second product demo (docs/demo.mp4)](docs/demo.mp4)** — recorded against the real UI/API in offline demo mode (`make demo`); `docs/record-demo.js` is the Playwright script that produced it.
+
 ## What makes this more than a "Gemini wrapper"
 
 | Capability | How it works |
