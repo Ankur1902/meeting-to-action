@@ -18,73 +18,24 @@ Interactive API docs (Swagger UI) are then available at
 
 ## Environment variables
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `GEMINI_API_KEY` | Yes | — | API key from [Google AI Studio](https://aistudio.google.com/app/apikey) |
-| `GEMINI_MODEL` | No | `gemini-2.5-flash` | Gemini model used for summarization/extraction |
-| `ALLOWED_ORIGINS` | No | `http://localhost:3000` | Comma-separated list of origins allowed by CORS |
-| `MAX_UPLOAD_SIZE_BYTES` | No | `10485760` (10MB) | Max size for uploaded transcript files |
+See `.env.example` for the full list. Key ones:
 
-## API reference
+| Variable | Default | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | — | Optional at startup; LLM routes return 503 without it |
+| `GEMINI_MODEL` / `EMBEDDING_MODEL` | `gemini-2.5-flash` / `gemini-embedding-001` | Models used |
+| `DATABASE_PATH` | `data/meetings.db` | SQLite memory file |
+| `GROUNDING_THRESHOLD` | `0.8` | Min fuzzy score for a quote to count as verified |
+| `ENABLE_LLM_VERIFIER` | `false` | Extra LLM entailment check per task |
+| `REDACT_PII` | `true` | Redact emails/phones before LLM + storage |
+| `API_KEY` / `RATE_LIMIT_PER_MINUTE` | empty / `60` | Auth + rate limiting for `/api/*` |
+| `ACTIONS_GITHUB_TOKEN` / `ACTIONS_GITHUB_REPO` | empty | Enable real issue creation on approval |
 
-### `GET /health`
-Liveness check. Returns `{"status": "ok"}`.
+## Endpoints
 
-### `POST /api/extract`
-Summarize and extract tasks from pasted text.
+- `POST /api/extract`, `POST /api/extract/upload`, `POST /api/extract/stream` (SSE) — grounded extraction; responses include `evidence`, `supported`, `confidence`, `warnings`, `trace`, `meetingId`
+- `GET /api/memory/meetings[/{id}]`, `DELETE /api/memory/meetings/{id}`, `GET|PATCH /api/memory/tasks`, `POST /api/memory/ask`, `GET /api/memory/insights`
+- `POST /api/actions/propose/{meeting_id}`, `GET /api/actions`, `POST /api/actions/{id}/approve|reject`
+- `GET /health`, `GET /api/metrics`
 
-**Request**
-```json
-{ "text": "John will prepare the Q3 sales report by Friday." }
-```
-
-**Response** `200 OK`
-```json
-{
-  "summary": {
-    "executiveSummary": "string",
-    "keyDecisions": ["string"]
-  },
-  "tasks": [
-    {
-      "id": "uuid",
-      "task": "string",
-      "owner": "string",
-      "deadline": "string",
-      "priority": "High | Medium | Low",
-      "status": "todo"
-    }
-  ]
-}
-```
-
-### `POST /api/extract/upload`
-Same response shape as above, but accepts a `multipart/form-data` body with
-a single `file` field (`.txt` or `.pdf`).
-
-**Error responses** (`400`, `502`, `500`) follow:
-```json
-{ "detail": "Human-readable explanation of what went wrong" }
-```
-
-## Running with Docker
-
-```bash
-docker build -t meeting-board-backend .
-docker run -p 8000:8000 --env-file .env meeting-board-backend
-```
-
-## Project layout
-
-```
-app/
-├── main.py              # FastAPI app, CORS, global error handler
-├── routes/extract.py     # /api/extract, /api/extract/upload
-├── services/
-│   ├── gemini_service.py # Gemini calls + response parsing
-│   └── file_service.py   # TXT/PDF text extraction
-├── schemas/               # Pydantic request/response models
-└── core/
-    ├── config.py          # Env-driven settings
-    └── prompts.py          # Gemini prompt templates
-```
+Interactive docs at `/docs`. Run tests with `pytest`, evals with `python -m evals.run_eval`.

@@ -1,7 +1,8 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { GripVertical, X } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, GripVertical, Quote, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { Task } from "@/types/task";
@@ -36,6 +37,8 @@ function initials(name: string): string {
 }
 
 export function TaskCard({ task, onRemove, isOverlay = false }: TaskCardProps) {
+  const [showEvidence, setShowEvidence] = useState(false);
+  const unverified = task.supported === false;
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: task.id,
     disabled: isOverlay,
@@ -92,6 +95,31 @@ export function TaskCard({ task, onRemove, isOverlay = false }: TaskCardProps) {
       </div>
 
       <p className="font-mono text-xs text-muted-foreground">&rarr; {task.deadline}</p>
+
+      {unverified && (
+        <p className="flex items-center gap-1 text-xs text-destructive">
+          <AlertTriangle className="h-3 w-3" /> Unverified — check the transcript
+        </p>
+      )}
+
+      {task.evidence?.quote && (
+        <div className="text-xs">
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => setShowEvidence((v) => !v)}
+            className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+            aria-expanded={showEvidence}
+          >
+            <Quote className="h-3 w-3" /> {showEvidence ? "Hide source" : "Show source"}
+          </button>
+          {showEvidence && (
+            <blockquote className="mt-1 border-l-2 border-border pl-2 italic text-muted-foreground">
+              {task.evidence.quote}
+            </blockquote>
+          )}
+        </div>
+      )}
     </div>
   );
 }

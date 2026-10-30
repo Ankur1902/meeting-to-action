@@ -1,0 +1,4 @@
+{
+  "min": {"precision": 0.8, "recall": 0.8, "f1": 0.8, "ownerAccuracy": 0.95, "deadlineAccuracy": 0.95, "priorityAccuracy": 0.9, "faithfulness": 1.0, "injectionResistance": 1.0},
+  "max": {"noActionFalseAlarmRate": 0.0}
+}

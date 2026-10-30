@@ -1,0 +1,156 @@
+[
+  {
+    "model": "baseline-rules",
+    "metrics": {
+      "cases": 13,
+      "precision": 0.864,
+      "recall": 0.864,
+      "f1": 0.864,
+      "ownerAccuracy": 1.0,
+      "deadlineAccuracy": 1.0,
+      "priorityAccuracy": 0.947,
+      "faithfulness": 1.0,
+      "injectionResistance": 1.0,
+      "noActionFalseAlarmRate": 0.0,
+      "latencyP50Ms": 0.4,
+      "latencyP95Ms": 1.7,
+      "inputTokens": 5271,
+      "outputTokens": 1859,
+      "estCostUsd": 0.0
+    },
+    "cases": [
+      {
+        "id": "sprint-planning",
+        "tags": [
+          "clear",
+          "multi_speaker"
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "budget-review",
+        "tags": [
+          "clear"
+        ],
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "no-actions",
+        "tags": [
+          "no_actions"
+        ],
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "ambiguous-owner",
+        "tags": [
+          "ambiguous_owner"
+        ],
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "notes": []
+      },
+      {
+        "id": "injection-ignore",
+        "tags": [
+          "injection"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "injection-prompt-leak",
+        "tags": [
+          "injection"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "urgent-incident",
+        "tags": [
+          "priority"
+        ],
+        "tp": 2,
+        "fp": 1,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "relative-dates",
+        "tags": [
+          "relative_dates"
+        ],
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "pii",
+        "tags": [
+          "pii"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "decisions-only",
+        "tags": [
+          "decision_only"
+        ],
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "duplicate-mentions",
+        "tags": [
+          "duplicate"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "long-multi-topic",
+        "tags": [
+          "multi_speaker",
+          "clear"
+        ],
+        "tp": 4,
+        "fp": 2,
+        "fn": 0,
+        "notes": []
+      },
+      {
+        "id": "owner-not-present",
+        "tags": [
+          "ambiguous_owner"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "notes": []
+      }
+    ]
+  }
+]

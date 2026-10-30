@@ -1,3 +1,4 @@
+import type { AgentAction, AskResponse, Insights } from "@/types/agent";
 import type { ExtractResponse } from "@/types/summary";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
@@ -58,4 +59,44 @@ export async function extractFromUpload(file: File): Promise<ExtractResponse> {
   }
 
   return response.json() as Promise<ExtractResponse>;
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, init);
+  if (!response.ok) {
+    throw new ApiError(await parseErrorDetail(response), response.status);
+  }
+  return response.json() as Promise<T>;
+}
+
+const json = (body: unknown): RequestInit => ({
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(body),
+});
+
+/** Ask a question across every stored meeting; answers carry numbered source citations. */
+export function askMemory(question: string): Promise<AskResponse> {
+  return request("/api/memory/ask", json({ question }));
+}
+
+/** Overdue carry-overs, duplicate and conflicting tasks across meetings. */
+export function getInsights(): Promise<Insights> {
+  return request("/api/memory/insights");
+}
+
+export function proposeActions(meetingId: string): Promise<AgentAction[]> {
+  return request(`/api/actions/propose/${meetingId}`, { method: "POST" });
+}
+
+export function listActions(): Promise<AgentAction[]> {
+  return request("/api/actions");
+}
+
+export function approveAction(id: string): Promise<AgentAction> {
+  return request(`/api/actions/${id}/approve`, { method: "POST" });
+}
+
+export function rejectAction(id: string): Promise<AgentAction> {
+  return request(`/api/actions/${id}/reject`, { method: "POST" });
 }

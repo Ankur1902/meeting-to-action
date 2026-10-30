@@ -8,13 +8,16 @@ import { TranscriptUpload } from "@/components/transcript-upload";
 import { SummaryCards } from "@/components/summary-cards";
 import { StatsDashboard } from "@/components/stats-dashboard";
 import { EmptyState } from "@/components/empty-state";
+import { AgentPanel } from "@/components/agent-panel";
+import { AskMemory } from "@/components/ask-memory";
+import { InsightsPanel } from "@/components/insights-panel";
 import { KanbanBoard } from "@/components/kanban/kanban-board";
 import { Separator } from "@/components/ui/separator";
 import { useTasks } from "@/hooks/use-tasks";
 import { useExtract } from "@/hooks/use-extract";
 import { useLocalStorageState } from "@/hooks/use-local-storage";
 import { STORAGE_KEYS } from "@/lib/storage";
-import type { MeetingSummary } from "@/types/summary";
+import type { ExtractResponse, MeetingSummary } from "@/types/summary";
 
 export default function Home() {
   const { tasks, hydrated, addTasks, moveTask, removeTask, clearTasks, stats } = useTasks();
@@ -25,6 +28,8 @@ export default function Home() {
   const { isLoading, error, runExtractFromText, runExtractFromUpload, clearError } =
     useExtract();
   const [activeError, setActiveError] = useState<string | null>(null);
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [meetingId, setMeetingId] = useState<string | null>(null);
 
   async function handleGenerateFromText(text: string) {
     clearError();
@@ -38,7 +43,9 @@ export default function Home() {
     if (result) applyResult(result);
   }
 
-  function applyResult(result: { summary: MeetingSummary; tasks: typeof tasks }) {
+  function applyResult(result: ExtractResponse) {
+    setWarnings(result.warnings ?? []);
+    setMeetingId(result.meetingId ?? null);
     setSummary(result.summary);
     addTasks(result.tasks);
   }
@@ -46,6 +53,8 @@ export default function Home() {
   function handleClearBoard() {
     clearTasks();
     setSummary(null);
+    setWarnings([]);
+    setMeetingId(null);
   }
 
   const displayError = error ?? activeError;
@@ -78,6 +87,19 @@ export default function Home() {
           <TranscriptUpload onGenerate={handleGenerateFromUpload} isLoading={isLoading} />
         </section>
 
+        {warnings.length > 0 && (
+          <div
+            role="status"
+            className="rounded-md border border-priority-medium/40 bg-priority-medium/10 px-4 py-3 text-sm"
+          >
+            <ul className="list-disc space-y-1 pl-4">
+              {warnings.map((w, i) => (
+                <li key={i}>{w}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {summary && (
           <section>
             <SummaryCards summary={summary} />
@@ -89,6 +111,15 @@ export default function Home() {
             <StatsDashboard stats={stats} />
           </section>
         )}
+
+        <Separator />
+
+        <section className="grid gap-4 lg:grid-cols-2">
+          <AskMemory />
+          <InsightsPanel refreshKey={meetingId} />
+        </section>
+
+        <AgentPanel meetingId={meetingId} />
 
         <Separator />
 
