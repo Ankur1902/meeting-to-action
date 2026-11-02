@@ -1,0 +1,124 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --amber:#d39a3e; --teal:#3f8a83; --ink:#070b16; --K:1; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:1920px; height:1080px; overflow:hidden; background:var(--ink); font-family:Inter,system-ui,sans-serif; color:#fff; }
+  #bg { position:absolute; inset:0; background:
+      radial-gradient(900px 600px at 15% 10%, rgba(211,154,62,.22), transparent 60%),
+      radial-gradient(900px 700px at 90% 95%, rgba(63,138,131,.25), transparent 60%),
+      linear-gradient(160deg,#0a1020 0%,#070b16 55%,#0b1424 100%); }
+  #grid { position:absolute; inset:0; opacity:.07; background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px); background-size:64px 64px; mask-image:radial-gradient(circle at 50% 50%,#000 30%,transparent 75%); }
+  .ease { transition-timing-function:cubic-bezier(.65,0,.35,1); }
+  #cam { position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; transition:transform calc(1100ms*var(--K)) cubic-bezier(.65,0,.35,1); will-change:transform; }
+  #win { position:absolute; left:240px; top:92px; width:1440px; height:904px; border-radius:16px; overflow:hidden; background:#f8f6f1;
+         box-shadow:0 0 0 1px rgba(255,255,255,.08), 0 40px 120px rgba(0,0,0,.55), 0 10px 30px rgba(0,0,0,.35);
+         opacity:0; transform:translateY(80px) scale(.94); transition:all calc(1200ms*var(--K)) cubic-bezier(.16,1,.3,1); }
+  #win.show { opacity:1; transform:none; }
+  #bar { height:44px; background:#ecebe6; display:flex; align-items:center; padding:0 16px; gap:8px; border-bottom:1px solid #dcdad3; }
+  .dot { width:12px; height:12px; border-radius:50%; } 
+  #url { margin-left:120px; flex:0 0 520px; height:28px; border-radius:8px; background:#fff; color:#6b6b6b; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; }
+  iframe { display:block; width:1440px; height:860px; border:0; background:#f8f6f1; }
+  #cursor { position:absolute; left:0; top:0; width:26px; height:26px; pointer-events:none; z-index:5;
+            transition:transform calc(750ms*var(--K)) cubic-bezier(.45,0,.2,1); filter:drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+  #cursor svg { transition:transform calc(120ms*var(--K)); transform-origin:4px 3px; }
+  #cursor.down svg { transform:scale(.82); }
+  .ripple { position:absolute; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%; border:2px solid var(--amber); pointer-events:none; z-index:4;
+            animation:rip calc(650ms*var(--K)) ease-out forwards; }
+  @keyframes rip { from { transform:scale(.4); opacity:1 } to { transform:scale(3.4); opacity:0 } }
+  #cap { position:absolute; left:50%; bottom:44px; transform:translate(-50%,24px); opacity:0; pointer-events:none; z-index:10;
+         display:flex; align-items:center; gap:18px; padding:16px 28px 16px 18px; border-radius:18px;
+         background:rgba(9,13,26,.78); backdrop-filter:blur(18px) saturate(140%); box-shadow:0 0 0 1px rgba(255,255,255,.1),0 20px 50px rgba(0,0,0,.45);
+         transition:all calc(600ms*var(--K)) cubic-bezier(.16,1,.3,1); white-space:nowrap; }
+  #cap.show { opacity:1; transform:translate(-50%,0); }
+  #cap .n { font:600 15px Inter; color:var(--ink); background:var(--amber); border-radius:10px; padding:8px 11px; letter-spacing:.5px; }
+  #cap .t { font:600 26px Inter; letter-spacing:-.3px; }
+  #cap .s { font:400 18px Inter; color:#a9b4c8; margin-top:3px; }
+  .full { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; pointer-events:none; z-index:20; }
+  .rise { opacity:0; transform:translateY(28px); filter:blur(8px); transition:all calc(900ms*var(--K)) cubic-bezier(.16,1,.3,1); }
+  .in .rise { opacity:1; transform:none; filter:none; }
+  .out .rise { opacity:0; transform:translateY(-20px); filter:blur(8px); }
+  .kick { font:600 16px Inter; letter-spacing:6px; color:var(--amber); text-transform:uppercase; }
+  .h1 { font-family:Fraunces,serif; font-weight:500; font-size:124px; letter-spacing:-3px; margin-top:22px; }
+  .h1 em { font-style:normal; color:var(--amber); }
+  .lead { font:400 30px Inter; color:#b4bfd2; margin-top:22px; max-width:1100px; line-height:1.4; }
+  .grid6 { display:grid; grid-template-columns:repeat(3,380px); gap:22px; margin-top:44px; }
+  .card { text-align:left; padding:26px 26px; border-radius:18px; background:rgba(255,255,255,.045); box-shadow:inset 0 0 0 1px rgba(255,255,255,.09); }
+  .card b { display:block; font:600 22px Inter; margin-bottom:8px; }
+  .card span { font:400 17px Inter; color:#a3aec2; line-height:1.45; }
+  .card i { display:inline-block; width:34px; height:4px; border-radius:2px; background:var(--amber); margin-bottom:16px; }
+  .card:nth-child(even) i { background:var(--teal); }
+  .h2 { font-family:Fraunces,serif; font-weight:500; font-size:64px; letter-spacing:-1.5px; }
+  .stack { display:flex; gap:12px; margin-top:34px; }
+  .chip { font:500 18px Inter; padding:10px 18px; border-radius:999px; background:rgba(255,255,255,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); color:#d6dcea; }
+  .repo { font:500 22px 'JetBrains Mono',ui-monospace,monospace; color:#fff; margin-top:40px; padding:14px 26px; border-radius:14px; background:rgba(211,154,62,.12); box-shadow:inset 0 0 0 1px rgba(211,154,62,.4); }
+  .foot { position:absolute; bottom:40px; font:400 15px Inter; color:#6c7890; }
+</style></head>
+<body>
+<div id="bg"></div><div id="grid"></div>
+
+<div id="intro" class="full">
+  <div class="kick rise" style="transition-delay:0ms">Meeting intelligence, grounded</div>
+  <div class="h1 rise" style="transition-delay:120ms">Minutes <em>→</em> Action</div>
+  <div class="lead rise" style="transition-delay:260ms">Every task traced to evidence. Every meeting remembered.<br>Every action approved by a human.</div>
+</div>
+
+<div id="cam"><div id="win">
+  <div id="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
+    <div id="url"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8a8a" stroke-width="2.5"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Minutes → Action</div></div>
+  <iframe id="app" src="http://localhost:3000"></iframe>
+  <div id="cursor"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 2.5l15 8.2-6.6 1.6-3.3 6.2z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+</div></div>
+
+<div id="cap"><div class="n">01</div><div><div class="t"></div><div class="s"></div></div></div>
+
+<div id="outro" class="full">
+  <div class="kick rise">Built for production, not demos</div>
+  <div class="grid6">
+    <div class="card rise" style="transition-delay:80ms"><i></i><b>Grounded extraction</b><span>Verbatim evidence for every task; unverifiable items flagged.</span></div>
+    <div class="card rise" style="transition-delay:160ms"><i></i><b>Cross-meeting memory</b><span>Vector retrieval with cited answers across every meeting.</span></div>
+    <div class="card rise" style="transition-delay:240ms"><i></i><b>Human-in-the-loop agent</b><span>Drafts emails and GitHub issues. Nothing runs without approval.</span></div>
+    <div class="card rise" style="transition-delay:320ms"><i></i><b>Evals &amp; CI gate</b><span>Labeled set, P/R/F1, faithfulness, injection resistance.</span></div>
+    <div class="card rise" style="transition-delay:400ms"><i></i><b>Guardrails</b><span>Prompt-injection detection, PII redaction, auth, rate limits.</span></div>
+    <div class="card rise" style="transition-delay:480ms"><i></i><b>Observability</b><span>Per-step pipeline traces, request IDs, latency metrics.</span></div>
+  </div>
+</div>
+
+<div id="end" class="full">
+  <div class="h2 rise">Minutes <span style="color:var(--amber)">→</span> Action</div>
+  <div class="stack rise" style="transition-delay:120ms"><span class="chip">FastAPI</span><span class="chip">Gemini</span><span class="chip">Next.js</span><span class="chip">TypeScript</span><span class="chip">51 tests</span></div>
+  <div class="repo rise" style="transition-delay:240ms">github.com/Ankur1902/meeting-to-action</div>
+  <div class="foot rise" style="transition-delay:400ms">Recorded in offline demo mode with a rule-based model · set GEMINI_API_KEY for live Gemini</div>
+</div>
+
+<script>
+const WIN = { x:240, y:92+44 };            // iframe origin in stage coords
+let cur = { x:720, y:430 };
+const $ = (s) => document.querySelector(s);
+window.stage = {
+  setK(k){ document.documentElement.style.setProperty('--K', k); },
+  show(id, on){ const el=$(id); el.classList.toggle('in', on); el.classList.toggle('out', !on); },
+  win(on){ $('#win').classList.toggle('show', on); },
+  cam(rect, s){                             // rect in iframe coords; s = zoom
+    let tx, ty;
+    if (!rect || s<=1) { $('#cam').style.transform = 'translate(0px,0px) scale(1)'; return; }
+    s = Math.max(1, Math.min(s, 1800/rect.w, 880/rect.h));   // auto-fit so wide/tall targets are never clipped
+    const cx = WIN.x + rect.x + rect.w/2, cy = WIN.y + rect.y + rect.h/2;
+    tx = 960 - s*cx; ty = 520 - s*cy;
+    const L=240, R=240+1440, T=92, B=92+904;
+    tx = Math.min(-s*L+0, Math.max(1920 - s*R, tx));
+    ty = Math.min(-s*T+0, Math.max(1080 - s*B, ty));
+    $('#cam').style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+  },
+  cursor(x, y){ cur={x,y}; $('#cursor').style.transform = `translate(${x}px,${y+44}px)`; },
+  click(){ const c=$('#cursor'); c.classList.add('down'); setTimeout(()=>c.classList.remove('down'),160);
+    const r=document.createElement('div'); r.className='ripple'; r.style.left=(cur.x+4)+'px'; r.style.top=(cur.y+44+3)+'px'; $('#win').appendChild(r); setTimeout(()=>r.remove(),1500); },
+  cap(n, t, s){ const c=$('#cap'); if(!t){ c.classList.remove('show'); return; }
+    c.classList.remove('show'); setTimeout(()=>{ c.querySelector('.n').textContent=n; c.querySelector('.t').textContent=t; c.querySelector('.s').textContent=s||''; c.classList.add('show'); }, 250); },
+  fadeWin(){ const w=$('#win'); w.style.opacity='0'; w.style.filter='blur(14px)'; w.style.transform='scale(.9)'; },
+};
+stage.cursor(720, 430);
+</script>
+</body></html>
